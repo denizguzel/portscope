@@ -39,10 +39,10 @@ When the user says "release çıkalım", "cut a release" or similar, that is the
 5. **Verify:** `bun run package:check`, then `bunx vsce ls` and confirm `CHANGELOG.md`, `LICENSE`, `README.md` and the icon are in the package. Stop on any failure.
 6. **Release commit and tag:** commit `chore(release): vX.Y.Z`, then tag `vX.Y.Z`.
 7. **Push:** `git push origin master vX.Y.Z`.
-8. **GitHub Release:** `gh release create vX.Y.Z --title vX.Y.Z --notes <the changelog section of this version>` (if `gh` is missing, say so and continue).
+8. **GitHub Release:** `gh release create vX.Y.Z --title vX.Y.Z --notes <the changelog section of this version>` (`gh` lives in `/home/linuxbrew/.linuxbrew/bin`; run `export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH` first. If `gh auth status` fails, tell the user to run `gh auth login` and continue).
 9. **Marketplace:** `bunx vsce publish` (it reuses the `package:check` build; do not bump the version again). Afterwards report the Marketplace URL: `https://marketplace.visualstudio.com/items?itemName=<publisher>.<name>`.
 
-Blocked steps: if `vsce` is not logged in for the publisher (no `VSCE_PAT`, `bunx vsce ls-publishers` is empty) or a push is rejected, finish steps 1-6, then tell the user exactly what is missing. Do not guess credentials.
+Blocked steps: if `vsce` is not logged in for the publisher (no `VSCE_PAT`, `bunx vsce ls-publishers` is empty) or `gh` is not logged in, or a push is rejected, finish steps 1-6, then tell the user exactly what is missing. Do not guess credentials.
 
 Report at the end: the version, the commits made, the tag, and which of push, GitHub Release and Marketplace happened.
 
