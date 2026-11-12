@@ -82,6 +82,7 @@
   "extensionKind": [
     "workspace"
   ],
+  "icon": "resources/portscope-icon.png",
   "engines": {
     "vscode": "^1.141.2"
   },

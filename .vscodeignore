@@ -12,3 +12,4 @@ src/**
 bun.lock
 knip.json
 tsconfig.json
+resources/*.svg
