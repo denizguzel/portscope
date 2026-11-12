@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-12
+
+### Changed
+
+- New extension icon.
+- The picker shows the same colored health dots as the hover (the old dots were always grey).
+
 ## [0.2.0] - 2026-11-12
 
 ### Added
@@ -29,5 +36,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Status bar item with the dev servers of the current window, a picker, and Open, Copy URL, Stop and Force Stop actions.
 - Health dot based on an HTTP `HEAD` request.
 
-[Unreleased]: https://github.com/denizguzel/portscope/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/denizguzel/portscope/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/denizguzel/portscope/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/denizguzel/portscope/releases/tag/v0.2.0

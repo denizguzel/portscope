@@ -1,7 +1,7 @@
 {
   "name": "portscope-dev",
   "displayName": "PortScope Dev",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Shows the dev servers of this VS Code window in the status bar and opens them in one click.",
   "categories": [
     "Other"
