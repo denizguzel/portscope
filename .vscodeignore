@@ -13,3 +13,6 @@ bun.lock
 knip.json
 tsconfig.json
 resources/*.svg
+test/**
+tsconfig.test.json
+.claude/**
