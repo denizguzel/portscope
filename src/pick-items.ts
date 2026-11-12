@@ -8,6 +8,10 @@ export const COPY_BUTTON: vscode.QuickInputButton = {
   iconPath: new vscode.ThemeIcon('copy'),
   tooltip: 'Copy URL',
 };
+export const TERMINAL_BUTTON: vscode.QuickInputButton = {
+  iconPath: new vscode.ThemeIcon('terminal'),
+  tooltip: 'Show terminal',
+};
 export const STOP_BUTTON: vscode.QuickInputButton = {
   iconPath: new vscode.ThemeIcon('debug-stop'),
   tooltip: 'Stop server',
@@ -15,7 +19,7 @@ export const STOP_BUTTON: vscode.QuickInputButton = {
 
 export const FORCE_BUTTON: vscode.QuickInputButton = {
   iconPath: new vscode.ThemeIcon('zap'),
-  tooltip: 'Force stop (SIGKILL)',
+  tooltip: 'Force Stop (SIGKILL)',
 };
 
 export interface ServerPickItem extends vscode.QuickPickItem {
@@ -42,7 +46,7 @@ function toPickItem(server: DevServer, nowMs: number): ServerPickItem {
     label: `:${server.port}`,
     description: server.relativePath,
     detail: serverDetail(server, nowMs),
-    buttons: [COPY_BUTTON, STOP_BUTTON, FORCE_BUTTON],
+    buttons: [COPY_BUTTON, TERMINAL_BUTTON, STOP_BUTTON, FORCE_BUTTON],
     server,
   };
 }

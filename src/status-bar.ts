@@ -7,22 +7,28 @@ import {
   ICON,
   isServerEntry,
   STOP_BUTTON,
+  TERMINAL_BUTTON,
   type PickEntry,
 } from './pick-items';
 import { overallColorId, serverDetail, serverUrl } from './server-format';
+import { readSettings } from './settings';
+import { findTerminal, isStartedByExtension } from './terminal-finder';
 import { buildTooltip } from './tooltip';
 import type { DevServer } from './types';
 
 /** With more servers than this, the item shows a count instead of every port. */
 const MAX_INLINE_PORTS = 2;
 
+const CHOOSE_OUTPUT_ACTION = 'Choose Output Channel';
+
 async function openServer(server: DevServer): Promise<void> {
-  await vscode.env.openExternal(vscode.Uri.parse(serverUrl(server)));
+  await vscode.env.openExternal(vscode.Uri.parse(serverUrl(server, readSettings().openPath)));
 }
 
 async function copyServerUrl(server: DevServer): Promise<void> {
-  await vscode.env.clipboard.writeText(serverUrl(server));
-  void vscode.window.showInformationMessage(`PortScope: copied ${serverUrl(server)}`);
+  const url = serverUrl(server, readSettings().openPath);
+  await vscode.env.clipboard.writeText(url);
+  void vscode.window.showInformationMessage(`PortScope: copied ${url}`);
 }
 
 /** Sends a signal to the server process. A process that already exited counts as stopped. */
@@ -57,7 +63,8 @@ export class PortScopeStatusBar implements vscode.Disposable {
   private lastColorKey = '';
   private visible = false;
 
-  constructor() {
+  /** `onUserStop` is called with a server that PortScope itself stopped. */
+  constructor(private readonly onUserStop: (server: DevServer) => void) {
     this.item.command = OPEN_COMMAND;
     this.item.name = 'PortScope';
   }
@@ -132,6 +139,37 @@ export class PortScopeStatusBar implements vscode.Disposable {
     }
   }
 
+  /** Brings the integrated terminal that started the server to the front. */
+  async showTerminal(port?: number): Promise<void> {
+    const target = await this.resolveTarget(port, 'Show the terminal of a dev server');
+    if (!target) {
+      return;
+    }
+    const terminal = await findTerminal(target.pid);
+    if (terminal) {
+      terminal.show();
+      return;
+    }
+    await this.explainMissingTerminal(target);
+  }
+
+  /** A server started by an extension in the background has no terminal, only an output channel. */
+  private async explainMissingTerminal(server: DevServer): Promise<void> {
+    if (await isStartedByExtension(server.pid)) {
+      const choice = await vscode.window.showInformationMessage(
+        `PortScope: :${server.port} runs in the background, started by an extension. Its output is in an Output channel.`,
+        CHOOSE_OUTPUT_ACTION,
+      );
+      if (choice === CHOOSE_OUTPUT_ACTION) {
+        await vscode.commands.executeCommand('workbench.action.showOutputChannels');
+      }
+      return;
+    }
+    void vscode.window.showInformationMessage(
+      `PortScope: :${server.port} was not started from an integrated terminal of this window.`,
+    );
+  }
+
   dispose(): void {
     this.item.dispose();
   }
@@ -185,6 +223,9 @@ export class PortScopeStatusBar implements vscode.Disposable {
         void this.stopServer(event.item.server, 'SIGTERM').then(render);
       } else if (event.button === FORCE_BUTTON) {
         void this.stopServer(event.item.server, 'SIGKILL').then(render);
+      } else if (event.button === TERMINAL_BUTTON) {
+        picker.hide();
+        void this.showTerminal(event.item.server.port);
       } else if (event.button === COPY_BUTTON) {
         picker.hide();
         void copyServerUrl(event.item.server);
@@ -203,6 +244,7 @@ export class PortScopeStatusBar implements vscode.Disposable {
       void vscode.window.showErrorMessage(`PortScope: could not stop :${server.port}. ${String(error)}`);
       return;
     }
+    this.onUserStop(server);
     // Hide it at once. The next scan shows it again if the process kept running.
     this.update(this.servers.filter((current) => current.pid !== server.pid));
     void vscode.window.showInformationMessage(`PortScope: ${verb} :${server.port}.`);
