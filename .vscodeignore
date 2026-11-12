@@ -16,3 +16,4 @@ resources/*.svg
 test/**
 tsconfig.test.json
 .claude/**
+docs/**

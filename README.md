@@ -1,17 +1,23 @@
+<p align="center"><img src="resources/portscope-icon.png" alt="PortScope icon" width="96" height="96"></p>
+
 # PortScope
 
-VS Code extension that shows the dev servers of the current window in the status bar and opens them in one click.
+Shows the dev servers of the current VS Code window in the status bar and opens them in one click. See the [changelog](CHANGELOG.md) for what changed in each release.
+
+<p align="center"><img src="docs/images/hover.png" alt="PortScope hover with two healthy dev servers" width="420"></p>
 
 ## Behavior
 
 - No server: the status bar item is hidden.
 - One server: `🚀 :4200`. A click opens `http://localhost:4200`.
 - Two servers: `🚀 :4200 · :8080`. Three or more: `🚀 3 servers`. A click opens a picker.
-- The picker groups servers by project. Each row shows the framework (Vite, Angular, Next.js, Spring and others), the uptime and the health, with copy, stop and force stop buttons.
+- The picker groups servers by project (see below). Each row shows the framework (Vite, Angular, Next.js, Spring and others), the uptime and the health, with copy, stop and force stop buttons.
 - The hover shows each server as `🟢 :4200 project · Vite · 12m · HTTP 200` with **Open**, **Copy URL**, **Terminal**, **Stop** and **Force Stop** actions. Stop and Force Stop sit on their own line. With more than three servers the actions show only icons. The ⚙ in the hover title opens the PortScope settings.
 - Stop sends SIGTERM. Force sends SIGKILL. Neither asks for confirmation. Commands: `PortScope: Open Dev Server`, `PortScope: Copy Dev Server URL`, `PortScope: Stop Dev Server`, `PortScope: Force Stop Dev Server (SIGKILL)`, `PortScope: Show Dev Server Terminal`, `PortScope: Open Settings`.
 - Each window shows only servers started from its own workspace folders. There is no global port list.
-- In a monorepo, the item shows the sub-folder of the server, for example `demo-app/apps/web`.
+- In a monorepo, the item shows the sub-folder of the server, for example `acme-shop/apps/web`.
+
+<p align="center"><img src="docs/images/picker.png" alt="PortScope picker listing three dev servers" width="640"></p>
 
 ## How it works
 
@@ -30,6 +36,8 @@ A listening socket always accepts a TCP connection, so a connection proves nothi
 | yellow | starting | The port is bound but silent: still compiling, hung, or not an HTTP port. |
 | grey   | unknown  | Health check is off.                                                      |
 
+<p align="center"><img src="docs/images/health-states.png" alt="Red, yellow and green health dots in the PortScope hover" width="420"></p>
+
 A silent or failing server is asked again on every scan, so a recovery shows up within one interval. A server that answered is asked again every `healthRecheckSeconds` (10 s by default), so a server that froze turns yellow. If any server is red the status bar item is red, else yellow if any is silent, else green.
 
 ## Notifications
@@ -42,6 +50,8 @@ Both can be turned off in the settings. Servers that are already running when th
 ## Settings
 
 Open them with `Ctrl+,` and search for "PortScope", from the ⚙ in the hover, or with `PortScope: Open Settings`. Project-specific values (for example `openPath`) belong in `.vscode/settings.json` of that project.
+
+<p align="center"><img src="docs/images/settings.png" alt="PortScope settings in the VS Code settings editor" width="640"></p>
 
 | Setting                            | Default | Description                                                       |
 | ---------------------------------- | ------- | ----------------------------------------------------------------- |
@@ -67,3 +77,7 @@ bun run build
 Press `F5` ("Run Extension") to start an Extension Development Host. Run `bun run package:vsix` to build `portscope-dev.vsix`.
 
 Minimum VS Code version: 1.141.2.
+
+## Credits
+
+The icon uses the `radar` glyph from [Lucide](https://lucide.dev) (ISC license).
