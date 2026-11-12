@@ -1,9 +1,24 @@
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="24" fill="#0e639c"/>
-  <g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round">
-    <circle cx="64" cy="64" r="36"/>
-    <circle cx="64" cy="64" r="17"/>
-    <path d="M64 14v14M64 100v14M14 64h14M100 64h14"/>
-  </g>
-  <circle cx="64" cy="64" r="6" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="psg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#10b981"/></linearGradient>
+    <radialGradient id="psh" cx="0.25" cy="0.15" r="0.9"><stop offset="0" stop-color="#fff" stop-opacity="0.28"/><stop offset="0.6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#psg)"/>
+  <rect width="128" height="128" rx="28" fill="url(#psh)"/>
+  <g transform="translate(25 27) scale(3.25)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000" stroke-opacity="0.18" stroke-width="1.9"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
+  <path d="M4 6h.01" />
+  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" />
+  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" />
+  <path d="M12 18h.01" />
+  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="m13.41 10.59 5.66-5.66" /></g>
+  <g transform="translate(25 24) scale(3.25)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#fff" stroke-width="1.9"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
+  <path d="M4 6h.01" />
+  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" />
+  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" />
+  <path d="M12 18h.01" />
+  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="m13.41 10.59 5.66-5.66" /></g>
 </svg>
