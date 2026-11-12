@@ -1,5 +1,5 @@
 {
-  "name": "portscope",
+  "name": "portscope-dev",
   "displayName": "PortScope",
   "version": "0.1.0",
   "description": "Shows the dev servers of this VS Code window in the status bar and opens them in one click.",
@@ -23,7 +23,7 @@
     "lint": "oxlint && bun run typecheck && bun run knip && bun run format:check",
     "lint:fix": "oxlint --fix && bun run format",
     "package:check": "bun run format && bun run lint && bun run build",
-    "package:vsix": "bun run package:check && vsce package --out portscope.vsix",
+    "package:vsix": "bun run package:check && vsce package --out portscope-dev.vsix",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "watch": "tsc --watch -p tsconfig.json"
   },

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "portscope",
+      "name": "portscope-dev",
       "devDependencies": {
         "@types/node": "26.6.6",
         "@types/vscode": "1.140.0",

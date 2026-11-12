@@ -47,6 +47,6 @@ bun run lint
 bun run build
 ```
 
-Press `F5` ("Run Extension") to start an Extension Development Host. Run `bun run package:vsix` to build `portscope.vsix`.
+Press `F5` ("Run Extension") to start an Extension Development Host. Run `bun run package:vsix` to build `portscope-dev.vsix`.
 
 Minimum VS Code version: 1.141.2.
