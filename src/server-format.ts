@@ -1,5 +1,5 @@
 import { describeCommand } from './command-name';
-import type { DevServer } from './types';
+import type { DevServer, ServerHealth } from './types';
 
 const SECOND_MS = 1000;
 const MINUTE_SECONDS = 60;
@@ -38,9 +38,35 @@ function formatUptime(startedAtMs: number | undefined, nowMs: number): string {
   return `${Math.floor(hours / DAY_HOURS)}d`;
 }
 
-/** Framework name and uptime, for example `Vite · 12m`. */
+/** Short health text, for example `HTTP 200` or `not answering`. Empty when health was not checked. */
+function healthWord(server: DevServer): string {
+  if (server.health === 'starting') {
+    return 'not answering';
+  }
+  if (server.health === 'serving') {
+    return server.httpStatus === undefined ? 'serving' : `HTTP ${server.httpStatus}`;
+  }
+  return '';
+}
+
+/** Theme color id of the health dot, or undefined when health was not checked. */
+export function healthColorId(health: ServerHealth): string | undefined {
+  if (health === 'serving') {
+    return 'charts.green';
+  }
+  return health === 'starting' ? 'charts.yellow' : undefined;
+}
+
+/** Color for the status bar item: yellow if any server is not answering, green if all answer. */
+export function overallColorId(servers: DevServer[]): string | undefined {
+  if (servers.some((server) => server.health === 'starting')) {
+    return healthColorId('starting');
+  }
+  return servers.every((server) => server.health === 'serving') ? healthColorId('serving') : undefined;
+}
+
+/** Framework name, uptime and health, for example `Vite · 12m · HTTP 200`. */
 export function serverDetail(server: DevServer, nowMs: number): string {
-  const uptime = formatUptime(server.startedAtMs, nowMs);
-  const framework = describeCommand(server.command);
-  return uptime ? `${framework} · ${uptime}` : framework;
+  const parts = [describeCommand(server.command), formatUptime(server.startedAtMs, nowMs), healthWord(server)];
+  return parts.filter(Boolean).join(' · ');
 }

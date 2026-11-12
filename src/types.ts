@@ -4,6 +4,9 @@ export interface WorkspaceFolderInfo {
   path: string;
 }
 
+/** `serving` answered an HTTP request, `starting` did not answer, `unknown` was not checked. */
+export type ServerHealth = 'serving' | 'starting' | 'unknown';
+
 export interface DevServer {
   port: number;
   pid: number;
@@ -14,4 +17,7 @@ export interface DevServer {
   relativePath: string;
   /** Wall-clock start time of the process in milliseconds, when it can be read. */
   startedAtMs: number | undefined;
+  health: ServerHealth;
+  /** Status code of the HTTP reply, when the server answered. */
+  httpStatus: number | undefined;
 }

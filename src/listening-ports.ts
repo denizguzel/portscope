@@ -136,6 +136,8 @@ async function inspectProcess(
     folderName: owner.name,
     relativePath,
     startedAtMs,
+    health: 'unknown',
+    httpStatus: undefined,
   }));
 }
 

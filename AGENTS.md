@@ -1,8 +1,8 @@
-# DevPorts Agent Rules
+# PortScope Agent Rules
 
 ## Scope rule
 
-- DevPorts shows only servers whose process working directory is inside a workspace folder of the current VS Code window. Never add a global port list.
+- PortScope shows only servers whose process working directory is inside a workspace folder of the current VS Code window. Never add a global port list.
 
 ## Code style
 

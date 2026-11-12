@@ -1,3 +1,4 @@
-export const OPEN_COMMAND = 'devPorts.open';
-export const COPY_COMMAND = 'devPorts.copyUrl';
-export const STOP_COMMAND = 'devPorts.stop';
+export const OPEN_COMMAND = 'portScope.open';
+export const COPY_COMMAND = 'portScope.copyUrl';
+export const STOP_COMMAND = 'portScope.stop';
+export const FORCE_STOP_COMMAND = 'portScope.forceStop';

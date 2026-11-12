@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { serverDetail } from './server-format';
+import { healthColorId, serverDetail } from './server-format';
 import type { DevServer } from './types';
 
 export const ICON = '$(rocket)';
@@ -13,6 +13,11 @@ export const STOP_BUTTON: vscode.QuickInputButton = {
   tooltip: 'Stop server',
 };
 
+export const FORCE_BUTTON: vscode.QuickInputButton = {
+  iconPath: new vscode.ThemeIcon('zap'),
+  tooltip: 'Force stop (SIGKILL)',
+};
+
 export interface ServerPickItem extends vscode.QuickPickItem {
   server: DevServer;
 }
@@ -23,12 +28,21 @@ export function isServerEntry(entry: PickEntry): entry is ServerPickItem {
   return 'server' in entry;
 }
 
+function healthIcon(server: DevServer): vscode.ThemeIcon {
+  const colorId = healthColorId(server.health);
+  if (!colorId) {
+    return new vscode.ThemeIcon('circle-outline');
+  }
+  return new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor(colorId));
+}
+
 function toPickItem(server: DevServer, nowMs: number): ServerPickItem {
   return {
-    label: `${ICON} :${server.port}`,
+    iconPath: healthIcon(server),
+    label: `:${server.port}`,
     description: server.relativePath,
     detail: serverDetail(server, nowMs),
-    buttons: [COPY_BUTTON, STOP_BUTTON],
+    buttons: [COPY_BUTTON, STOP_BUTTON, FORCE_BUTTON],
     server,
   };
 }

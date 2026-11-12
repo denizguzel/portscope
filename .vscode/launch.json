@@ -8,7 +8,7 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "${workspaceFolder}/.vscode/dev-ports-dev.code-workspace"
+        "${workspaceFolder}/.vscode/portscope-dev.code-workspace"
       ],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "bun: build"

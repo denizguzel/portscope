@@ -1,7 +1,15 @@
 import * as vscode from 'vscode';
 import { OPEN_COMMAND } from './commands';
-import { buildPickEntries, COPY_BUTTON, ICON, isServerEntry, STOP_BUTTON, type PickEntry } from './pick-items';
-import { serverDetail, serverUrl } from './server-format';
+import {
+  buildPickEntries,
+  COPY_BUTTON,
+  FORCE_BUTTON,
+  ICON,
+  isServerEntry,
+  STOP_BUTTON,
+  type PickEntry,
+} from './pick-items';
+import { overallColorId, serverDetail, serverUrl } from './server-format';
 import { buildTooltip } from './tooltip';
 import type { DevServer } from './types';
 
@@ -14,13 +22,13 @@ async function openServer(server: DevServer): Promise<void> {
 
 async function copyServerUrl(server: DevServer): Promise<void> {
   await vscode.env.clipboard.writeText(serverUrl(server));
-  void vscode.window.showInformationMessage(`DevPorts: copied ${serverUrl(server)}`);
+  void vscode.window.showInformationMessage(`PortScope: copied ${serverUrl(server)}`);
 }
 
-/** Sends SIGTERM to the server process. A process that already exited counts as stopped. */
-function terminate(pid: number): void {
+/** Sends a signal to the server process. A process that already exited counts as stopped. */
+function terminate(pid: number, signal: NodeJS.Signals): void {
   try {
-    process.kill(pid, 'SIGTERM');
+    process.kill(pid, signal);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== 'ESRCH') {
       throw error;
@@ -41,16 +49,17 @@ function tooltipKey(servers: DevServer[], nowMs: number): string {
 }
 
 /** Shows one status bar item for the dev servers of this window. */
-export class DevPortsStatusBar implements vscode.Disposable {
+export class PortScopeStatusBar implements vscode.Disposable {
   private readonly item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
   private servers: DevServer[] = [];
   private lastTooltipKey = '';
   private lastText = '';
+  private lastColorKey = '';
   private visible = false;
 
   constructor() {
     this.item.command = OPEN_COMMAND;
-    this.item.name = 'DevPorts';
+    this.item.name = 'PortScope';
   }
 
   update(servers: DevServer[]): void {
@@ -58,6 +67,7 @@ export class DevPortsStatusBar implements vscode.Disposable {
     if (servers.length === 0) {
       this.lastTooltipKey = '';
       this.lastText = '';
+      this.lastColorKey = '';
       this.visible = false;
       this.item.hide();
       return;
@@ -69,6 +79,12 @@ export class DevPortsStatusBar implements vscode.Disposable {
     if (text !== this.lastText) {
       this.lastText = text;
       this.item.text = text;
+    }
+    const colorId = overallColorId(servers);
+    const colorKey = colorId ?? 'none';
+    if (colorKey !== this.lastColorKey) {
+      this.lastColorKey = colorKey;
+      this.item.color = colorId ? new vscode.ThemeColor(colorId) : undefined;
     }
     const key = tooltipKey(servers, nowMs);
     if (key !== this.lastTooltipKey) {
@@ -100,11 +116,19 @@ export class DevPortsStatusBar implements vscode.Disposable {
     }
   }
 
-  /** Stops the server on the given port, the only server, or the one the user picks. */
+  /** Stops the server (SIGTERM) on the given port, the only server, or the one the user picks. */
   async stop(port?: number): Promise<void> {
     const target = await this.resolveTarget(port, 'Stop a dev server');
     if (target) {
-      await this.stopServer(target);
+      await this.stopServer(target, 'SIGTERM');
+    }
+  }
+
+  /** Same as stop, but sends SIGKILL for a server that ignores SIGTERM. */
+  async forceStop(port?: number): Promise<void> {
+    const target = await this.resolveTarget(port, 'Force stop a dev server');
+    if (target) {
+      await this.stopServer(target, 'SIGKILL');
     }
   }
 
@@ -113,7 +137,7 @@ export class DevPortsStatusBar implements vscode.Disposable {
   }
 
   private notifyEmpty(): void {
-    void vscode.window.showInformationMessage('DevPorts: no dev server is running in this window.');
+    void vscode.window.showInformationMessage('PortScope: no dev server is running in this window.');
   }
 
   /** Uses the given port, else the only server, else asks the user. */
@@ -158,7 +182,9 @@ export class DevPortsStatusBar implements vscode.Disposable {
         return;
       }
       if (event.button === STOP_BUTTON) {
-        void this.stopServer(event.item.server).then(render);
+        void this.stopServer(event.item.server, 'SIGTERM').then(render);
+      } else if (event.button === FORCE_BUTTON) {
+        void this.stopServer(event.item.server, 'SIGKILL').then(render);
       } else if (event.button === COPY_BUTTON) {
         picker.hide();
         void copyServerUrl(event.item.server);
@@ -169,15 +195,16 @@ export class DevPortsStatusBar implements vscode.Disposable {
     picker.show();
   }
 
-  private async stopServer(server: DevServer): Promise<void> {
+  private async stopServer(server: DevServer, signal: NodeJS.Signals): Promise<void> {
+    const verb = signal === 'SIGKILL' ? 'force stopped' : 'stopped';
     try {
-      terminate(server.pid);
+      terminate(server.pid, signal);
     } catch (error) {
-      void vscode.window.showErrorMessage(`DevPorts: could not stop :${server.port}. ${String(error)}`);
+      void vscode.window.showErrorMessage(`PortScope: could not stop :${server.port}. ${String(error)}`);
       return;
     }
     // Hide it at once. The next scan shows it again if the process kept running.
     this.update(this.servers.filter((current) => current.pid !== server.pid));
-    void vscode.window.showInformationMessage(`DevPorts: stopped :${server.port}.`);
+    void vscode.window.showInformationMessage(`PortScope: ${verb} :${server.port}.`);
   }
 }
