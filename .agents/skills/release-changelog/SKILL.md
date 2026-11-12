@@ -36,15 +36,16 @@ When the user says "release çıkalım", "cut a release" or similar, that is the
 2. **Pick the version** (SemVer, `0.x`): breaking change or new feature → minor, only fixes → patch. Say why in one line.
 3. **Changelog:** write the entries (step 2 above), rename `[Unreleased]` to `[X.Y.Z] - YYYY-MM-DD`, add a fresh empty `[Unreleased]` above it, and update the compare links at the bottom (`https://github.com/denizguzel/portscope/compare/vA...vB`; for the first tag use `releases/tag/vX.Y.Z`).
 4. **Version and docs:** set `version` in `package.json`. If settings or commands changed, update the tables in `README.md`.
-5. **Verify:** `bun run package:check`, then `bunx vsce ls` and confirm `CHANGELOG.md`, `LICENSE`, `README.md` and the icon are in the package. Stop on any failure.
+5. **Verify:** `bun run package:vsix` (it runs `package:check` and builds `portscope-dev.vsix`), then `bunx vsce ls` and confirm `CHANGELOG.md`, `LICENSE`, `README.md` and the icon are in the package. Stop on any failure.
 6. **Release commit and tag:** commit `chore(release): vX.Y.Z`, then tag `vX.Y.Z`.
 7. **Push:** `git push origin master vX.Y.Z`.
 8. **GitHub Release:** `gh release create vX.Y.Z --title vX.Y.Z --notes <the changelog section of this version>` (`gh` lives in `/home/linuxbrew/.linuxbrew/bin`; run `export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH` first. If `gh auth status` fails, tell the user to run `gh auth login` and continue).
-9. **Marketplace:** `bunx vsce publish` (it reuses the `package:check` build; do not bump the version again). Afterwards report the Marketplace URL: `https://marketplace.visualstudio.com/items?itemName=<publisher>.<name>`.
+9. **Marketplace:** `bunx vsce publish --packagePath portscope-dev.vsix` (the file built in step 5; do not rebuild and do not bump the version again). Report the URL: `https://marketplace.visualstudio.com/items?itemName=<publisher>.<name>`.
+10. **Open VSX:** `bunx ovsx publish portscope-dev.vsix --skip-duplicate`, the same file as step 9. Report the URL: `https://open-vsx.org/extension/<publisher>/<name>`. `ovsx` keeps its own login; check it first with `bunx ovsx verify-pat <publisher>`.
 
-Blocked steps: if `vsce` is not logged in for the publisher (no `VSCE_PAT`, `bunx vsce ls-publishers` is empty) or `gh` is not logged in, or a push is rejected, finish steps 1-6, then tell the user exactly what is missing. Do not guess credentials.
+Blocked steps: if `vsce` is not logged in for the publisher (no `VSCE_PAT`, `bunx vsce ls-publishers` is empty) or `gh` is not logged in, or `ovsx verify-pat` fails, or a push is rejected, finish every step that does not need the missing login, then tell the user exactly what is missing. A failed Marketplace publish does not stop the Open VSX publish, and the other way round. Do not guess credentials.
 
-Report at the end: the version, the commits made, the tag, and which of push, GitHub Release and Marketplace happened.
+Report at the end: the version, the commits made, the tag, and which of push, GitHub Release, Marketplace and Open VSX happened.
 
 ## Marketplace checklist
 
