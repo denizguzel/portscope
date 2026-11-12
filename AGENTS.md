@@ -20,3 +20,8 @@ bun run format
 bun run lint
 bun run build
 ```
+
+## Releases
+
+- To write the changelog or prepare a release, use the `release-changelog` skill in `.agents/skills/`.
+- Use Conventional Commits (`feat:`, `fix:`, `chore:`) so the history is readable later.
