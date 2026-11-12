@@ -1,0 +1,75 @@
+{
+  "name": "dev-ports",
+  "displayName": "DevPorts",
+  "version": "0.1.0",
+  "description": "Shows the dev servers of this VS Code window in the status bar and opens them in one click.",
+  "categories": [
+    "Other"
+  ],
+  "license": "MIT",
+  "publisher": "devports",
+  "type": "commonjs",
+  "main": "./dist/extension.js",
+  "scripts": {
+    "build": "bun run build:extension",
+    "build:extension": "tsc -p tsconfig.json",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "knip": "knip",
+    "lint": "oxlint && bun run typecheck && bun run knip && bun run format:check",
+    "lint:fix": "oxlint --fix && bun run format",
+    "package:check": "bun run format && bun run lint && bun run build",
+    "package:vsix": "bun run package:check && vsce package --out dev-ports.vsix",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "watch": "tsc --watch -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/vscode": "1.140.0",
+    "@vscode/vsce": "4.1.0",
+    "knip": "6.45.1",
+    "oxfmt": "0.78.0",
+    "oxlint": "1.93.0",
+    "typescript": "7.0.2"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "devPorts.open",
+        "title": "Open Dev Server",
+        "category": "DevPorts"
+      },
+      {
+        "command": "devPorts.copyUrl",
+        "title": "Copy Dev Server URL",
+        "category": "DevPorts"
+      },
+      {
+        "command": "devPorts.stop",
+        "title": "Stop Dev Server",
+        "category": "DevPorts"
+      }
+    ],
+    "configuration": {
+      "title": "DevPorts",
+      "properties": {
+        "devPorts.refreshIntervalSeconds": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "description": "How often DevPorts scans for dev servers while the window is focused."
+        }
+      }
+    }
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "engines": {
+    "vscode": "^1.141.2"
+  },
+  "packageManager": "bun@1.4.4"
+}

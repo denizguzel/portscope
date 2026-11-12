@@ -1,0 +1,14 @@
+.agents/**
+AGENTS.md
+.git/**
+.vscode/**
+node_modules/**
+src/**
+*.vsix
+.gitignore
+.oxfmtrc.json
+.oxlintrc.json
+.vscodeignore
+bun.lock
+knip.json
+tsconfig.json
