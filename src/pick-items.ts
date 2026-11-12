@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { healthColorId, serverDetail } from './server-format';
+import { healthDot, serverDetail } from './server-format';
 import type { DevServer } from './types';
 
 export const ICON = '$(rocket)';
@@ -32,18 +32,9 @@ export function isServerEntry(entry: PickEntry): entry is ServerPickItem {
   return 'server' in entry;
 }
 
-function healthIcon(server: DevServer): vscode.ThemeIcon {
-  const colorId = healthColorId(server.health);
-  if (!colorId) {
-    return new vscode.ThemeIcon('circle-outline');
-  }
-  return new vscode.ThemeIcon('circle-filled', new vscode.ThemeColor(colorId));
-}
-
 function toPickItem(server: DevServer, nowMs: number): ServerPickItem {
   return {
-    iconPath: healthIcon(server),
-    label: `:${server.port}`,
+    label: `${healthDot(server.health)} :${server.port}`,
     description: server.relativePath,
     detail: serverDetail(server, nowMs),
     buttons: [COPY_BUTTON, TERMINAL_BUTTON, STOP_BUTTON, FORCE_BUTTON],

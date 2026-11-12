@@ -57,6 +57,13 @@ const HEALTH_COLOR_IDS: Record<ServerHealth, string | undefined> = {
   unknown: undefined,
 };
 
+const HEALTH_DOTS: Record<ServerHealth, string> = { serving: '🟢', failing: '🔴', starting: '🟡', unknown: '⚪' };
+
+/** Colored dot for the hover and the picker. Quick pick icons cannot take a theme color, so this is an emoji. */
+export function healthDot(health: ServerHealth): string {
+  return HEALTH_DOTS[health];
+}
+
 /** Theme color id of the health dot, or undefined when health was not checked. */
 export function healthColorId(health: ServerHealth): string | undefined {
   return HEALTH_COLOR_IDS[health];

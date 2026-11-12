@@ -7,10 +7,8 @@ import {
   STOP_COMMAND,
   TERMINAL_COMMAND,
 } from './commands';
-import { serverDetail, serverLabel } from './server-format';
-import type { DevServer, ServerHealth } from './types';
-
-const HEALTH_DOTS: Record<ServerHealth, string> = { serving: '🟢', failing: '🔴', starting: '🟡', unknown: '⚪' };
+import { healthDot, serverDetail, serverLabel } from './server-format';
+import type { DevServer } from './types';
 
 /** With more servers than this, action links show only icons so the hover stays short. */
 const MAX_LABELED_SERVERS = 3;
@@ -46,7 +44,7 @@ export function buildTooltip(servers: DevServer[], nowMs: number): vscode.Markdo
   tooltip.appendMarkdown(`**PortScope** &nbsp; [$(gear)](command:${SETTINGS_COMMAND} "PortScope settings")\n\n`);
   const compact = servers.length > MAX_LABELED_SERVERS;
   for (const server of servers) {
-    tooltip.appendMarkdown(`${HEALTH_DOTS[server.health]} **:${server.port}** &nbsp;`);
+    tooltip.appendMarkdown(`${healthDot(server.health)} **:${server.port}** &nbsp;`);
     tooltip.appendText(`${serverLabel(server)} · ${serverDetail(server, nowMs)}`);
     tooltip.appendMarkdown(`  \n${actionLines(server, compact)}\n\n`);
   }

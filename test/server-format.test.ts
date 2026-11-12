@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { healthColorId, overallColorId, serverDetail, serverUrl } from '../src/server-format';
+import { healthColorId, healthDot, overallColorId, serverDetail, serverUrl } from '../src/server-format';
 import { makeServer } from './fixtures';
 
 const NOW = 1_000_000_000;
@@ -43,4 +43,11 @@ test('overall color: red beats yellow beats green', () => {
   expect(overallColorId([serving, starting])).toBe('charts.yellow');
   expect(overallColorId([serving, starting, failing])).toBe('charts.red');
   expect(overallColorId([makeServer({ health: 'unknown' })])).toBeUndefined();
+});
+
+test('health dots', () => {
+  expect(healthDot('serving')).toBe('🟢');
+  expect(healthDot('failing')).toBe('🔴');
+  expect(healthDot('starting')).toBe('🟡');
+  expect(healthDot('unknown')).toBe('⚪');
 });
