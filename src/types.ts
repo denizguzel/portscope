@@ -4,8 +4,11 @@ export interface WorkspaceFolderInfo {
   path: string;
 }
 
-/** `serving` answered an HTTP request, `starting` did not answer, `unknown` was not checked. */
-export type ServerHealth = 'serving' | 'starting' | 'unknown';
+/**
+ * `serving` answered an HTTP request, `failing` answered with a 5xx status,
+ * `starting` did not answer, `unknown` was not checked.
+ */
+export type ServerHealth = 'serving' | 'failing' | 'starting' | 'unknown';
 
 export interface DevServer {
   port: number;

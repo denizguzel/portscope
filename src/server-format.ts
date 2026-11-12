@@ -6,8 +6,9 @@ const MINUTE_SECONDS = 60;
 const HOUR_MINUTES = 60;
 const DAY_HOURS = 24;
 
-export function serverUrl(server: DevServer): string {
-  return `http://localhost:${server.port}`;
+/** URL of the server. `path` is appended as is, so it must start with a slash or be empty. */
+export function serverUrl(server: DevServer, path = ''): string {
+  return `http://localhost:${server.port}${path}`;
 }
 
 export function serverLabel(server: DevServer): string {
@@ -15,7 +16,7 @@ export function serverLabel(server: DevServer): string {
 }
 
 /**
- * Formats how long a server has been running, for example `<1m`, `12m`, `2h 5m` or `3d`.
+ * Formats how long a server has been running, for example `just started`, `12m`, `2h 5m` or `3d`.
  * It never shows seconds: VS Code does not refresh an open hover, so seconds would look frozen.
  */
 function formatUptime(startedAtMs: number | undefined, nowMs: number): string {
@@ -24,7 +25,7 @@ function formatUptime(startedAtMs: number | undefined, nowMs: number): string {
   }
   const seconds = Math.max(0, Math.floor((nowMs - startedAtMs) / SECOND_MS));
   if (seconds < MINUTE_SECONDS) {
-    return '<1m';
+    return 'just started';
   }
   const minutes = Math.floor(seconds / MINUTE_SECONDS);
   if (minutes < HOUR_MINUTES) {
@@ -43,22 +44,29 @@ function healthWord(server: DevServer): string {
   if (server.health === 'starting') {
     return 'not answering';
   }
-  if (server.health === 'serving') {
-    return server.httpStatus === undefined ? 'serving' : `HTTP ${server.httpStatus}`;
+  if (server.health === 'serving' || server.health === 'failing') {
+    return server.httpStatus === undefined ? server.health : `HTTP ${server.httpStatus}`;
   }
   return '';
 }
 
+const HEALTH_COLOR_IDS: Record<ServerHealth, string | undefined> = {
+  serving: 'charts.green',
+  failing: 'charts.red',
+  starting: 'charts.yellow',
+  unknown: undefined,
+};
+
 /** Theme color id of the health dot, or undefined when health was not checked. */
 export function healthColorId(health: ServerHealth): string | undefined {
-  if (health === 'serving') {
-    return 'charts.green';
-  }
-  return health === 'starting' ? 'charts.yellow' : undefined;
+  return HEALTH_COLOR_IDS[health];
 }
 
-/** Color for the status bar item: yellow if any server is not answering, green if all answer. */
+/** Color for the status bar item: red if any server fails, yellow if any is silent, green if all answer. */
 export function overallColorId(servers: DevServer[]): string | undefined {
+  if (servers.some((server) => server.health === 'failing')) {
+    return healthColorId('failing');
+  }
   if (servers.some((server) => server.health === 'starting')) {
     return healthColorId('starting');
   }
