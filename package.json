@@ -6,6 +6,20 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "dev server",
+    "health check",
+    "localhost",
+    "next.js",
+    "port",
+    "status bar",
+    "vite",
+    "wsl"
+  ],
+  "homepage": "https://github.com/denizguzel/portscope#readme",
+  "bugs": {
+    "url": "https://github.com/denizguzel/portscope/issues"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -22,12 +36,14 @@
     "knip": "knip",
     "lint": "oxlint && bun run typecheck && bun run knip && bun run format:check",
     "lint:fix": "oxlint --fix && bun run format",
-    "package:check": "bun run format && bun run lint && bun run build",
+    "package:check": "bun run format && bun run lint && bun run test && bun run build",
     "package:vsix": "bun run package:check && vsce package --out portscope-dev.vsix",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "watch": "tsc --watch -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "watch": "tsc --watch -p tsconfig.json",
+    "test": "bun test"
   },
   "devDependencies": {
+    "@types/bun": "^1.4.4",
     "@types/node": "26.6.6",
     "@types/vscode": "1.140.0",
     "@vscode/vsce": "4.1.0",
@@ -57,6 +73,16 @@
         "command": "portScope.forceStop",
         "title": "Force Stop Dev Server (SIGKILL)",
         "category": "PortScope"
+      },
+      {
+        "command": "portScope.showTerminal",
+        "title": "Show Dev Server Terminal",
+        "category": "PortScope"
+      },
+      {
+        "command": "portScope.openSettings",
+        "title": "Open Settings",
+        "category": "PortScope"
       }
     ],
     "configuration": {
@@ -64,14 +90,50 @@
       "properties": {
         "portScope.refreshIntervalSeconds": {
           "type": "number",
-          "default": 3,
+          "default": 2,
           "minimum": 1,
           "description": "How often PortScope scans for dev servers while the window is focused."
         },
         "portScope.healthCheck": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Send a `HEAD /` request to each dev server to tell a server that answers (green) from one that is only bound (yellow). A server that answered is not asked again. Turn this off if you do not want any extra request in your dev server logs."
+          "markdownDescription": "Send a `HEAD` request to each dev server to tell a server that answers (green) from one that is only bound (yellow), or answers with a 5xx status (red). Turn this off if you do not want any extra request in your dev server logs."
+        },
+        "portScope.healthRecheckSeconds": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "markdownDescription": "A server that answered is asked again after this many seconds, so a server that froze turns yellow. `0` never asks again."
+        },
+        "portScope.healthPath": {
+          "type": "string",
+          "default": "/",
+          "markdownDescription": "Request path of the health check, for example `/health`. Use it when `/` is slow or not served."
+        },
+        "portScope.ignorePorts": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "default": [],
+          "markdownDescription": "Ports PortScope never shows or checks, for example a debug port or a database."
+        },
+        "portScope.openPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path added to the URL when you open or copy a server, for example `/admin`. Set it per project in `.vscode/settings.json`."
+        },
+        "portScope.notifications.ready": {
+          "type": "boolean",
+          "default": true,
+          "description": "Notify when a server that did not answer starts answering."
+        },
+        "portScope.notifications.stopped": {
+          "type": "boolean",
+          "default": true,
+          "description": "Notify when a server stops without being stopped from PortScope."
         }
       }
     }
@@ -83,6 +145,10 @@
     "workspace"
   ],
   "icon": "resources/portscope-icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.141.2"
   },
