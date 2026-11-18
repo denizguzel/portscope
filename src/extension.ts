@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import * as vscode from 'vscode';
 import { findDevServers } from './listening-ports';
+import { isIgnoredCommand } from './process-ignore';
 import {
   COPY_COMMAND,
   FORCE_STOP_COMMAND,
@@ -41,7 +42,10 @@ export function activate(context: vscode.ExtensionContext): void {
     try {
       const settings = readSettings();
       const found = await findDevServers(await readWorkspaceFolders());
-      const servers = found.filter((server) => !settings.ignorePorts.has(server.port));
+      const servers = found.filter(
+        (server) =>
+          !settings.ignorePorts.has(server.port) && !isIgnoredCommand(server.command, settings.ignoreProcesses),
+      );
       const checked = settings.healthCheck
         ? await applyHealth(servers, healthCache, { path: settings.healthPath, recheckMs: settings.healthRecheckMs })
         : servers;

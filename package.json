@@ -120,6 +120,16 @@
           "default": [],
           "markdownDescription": "Ports PortScope never shows or checks, for example a debug port or a database."
         },
+        "portScope.ignoreProcesses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "browse"
+          ],
+          "markdownDescription": "Program or script names PortScope never shows, for example a tool that an AI agent started inside the project. `browse` matches both `/opt/bin/browse serve` and `node tools/browse.js`. Case does not matter."
+        },
         "portScope.openPath": {
           "type": "string",
           "default": "",

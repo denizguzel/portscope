@@ -10,6 +10,8 @@ export interface PortScopeSettings {
   healthRecheckMs: number;
   healthPath: string;
   ignorePorts: Set<number>;
+  /** Lower-case program or script names whose servers are never shown. */
+  ignoreProcesses: Set<string>;
   /** Appended to the URL when opening or copying. Empty or starts with a slash. */
   openPath: string;
   notifyReady: boolean;
@@ -32,6 +34,18 @@ function readPorts(raw: unknown): Set<number> {
   return new Set(raw.filter((port): port is number => Number.isInteger(port) && port > 0));
 }
 
+function readNames(raw: unknown): Set<string> {
+  if (!Array.isArray(raw)) {
+    return new Set();
+  }
+  return new Set(
+    raw
+      .filter((name): name is string => typeof name === 'string')
+      .map((name) => name.trim().toLowerCase())
+      .filter((name) => name !== ''),
+  );
+}
+
 export function readSettings(): PortScopeSettings {
   const config = vscode.workspace.getConfiguration('portScope');
   const interval = config.get<number>('refreshIntervalSeconds', DEFAULT_INTERVAL_SECONDS);
@@ -42,6 +56,7 @@ export function readSettings(): PortScopeSettings {
     healthRecheckMs: Math.max(0, recheck) * SECOND_MS,
     healthPath: normalizePath(config.get<string>('healthPath', '/'), '/'),
     ignorePorts: readPorts(config.get<unknown>('ignorePorts', [])),
+    ignoreProcesses: readNames(config.get<unknown>('ignoreProcesses', [])),
     openPath: normalizePath(config.get<string>('openPath', ''), ''),
     notifyReady: config.get<boolean>('notifications.ready', true),
     notifyStopped: config.get<boolean>('notifications.stopped', true),

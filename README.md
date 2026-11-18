@@ -53,16 +53,17 @@ Open them with `Ctrl+,` and search for "PortScope", from the ⚙ in the hover, o
 
 <p align="center"><img src="docs/images/settings.png" alt="PortScope settings in the VS Code settings editor" width="640"></p>
 
-| Setting                            | Default | Description                                                       |
-| ---------------------------------- | ------- | ----------------------------------------------------------------- |
-| `portScope.refreshIntervalSeconds` | `2`     | Scan interval while the window is focused.                        |
-| `portScope.healthCheck`            | `true`  | Send one `HEAD` request per dev server to check health.           |
-| `portScope.healthRecheckSeconds`   | `10`    | Ask a healthy server again after this long. `0` never asks again. |
-| `portScope.healthPath`             | `/`     | Request path of the health check, for example `/health`.          |
-| `portScope.ignorePorts`            | `[]`    | Ports that are never shown or checked.                            |
-| `portScope.openPath`               | `""`    | Path added when you open or copy a URL, for example `/admin`.     |
-| `portScope.notifications.ready`    | `true`  | Notify when a silent server starts answering.                     |
-| `portScope.notifications.stopped`  | `true`  | Notify when a server stops without being stopped from PortScope.  |
+| Setting                            | Default      | Description                                                       |
+| ---------------------------------- | ------------ | ----------------------------------------------------------------- |
+| `portScope.refreshIntervalSeconds` | `2`          | Scan interval while the window is focused.                        |
+| `portScope.healthCheck`            | `true`       | Send one `HEAD` request per dev server to check health.           |
+| `portScope.healthRecheckSeconds`   | `10`         | Ask a healthy server again after this long. `0` never asks again. |
+| `portScope.healthPath`             | `/`          | Request path of the health check, for example `/health`.          |
+| `portScope.ignorePorts`            | `[]`         | Ports that are never shown or checked.                            |
+| `portScope.ignoreProcesses`        | `["browse"]` | Program or script names that are never shown.                     |
+| `portScope.openPath`               | `""`         | Path added when you open or copy a URL, for example `/admin`.     |
+| `portScope.notifications.ready`    | `true`       | Notify when a silent server starts answering.                     |
+| `portScope.notifications.stopped`  | `true`       | Notify when a server stops without being stopped from PortScope.  |
 
 ## Development
 
