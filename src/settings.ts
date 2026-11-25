@@ -12,6 +12,8 @@ export interface PortScopeSettings {
   ignorePorts: Set<number>;
   /** Lower-case program or script names whose servers are never shown. */
   ignoreProcesses: Set<string>;
+  /** Hide random high ports of a process that also listens on a chosen port. */
+  hideHelperPorts: boolean;
   /** Appended to the URL when opening or copying. Empty or starts with a slash. */
   openPath: string;
   notifyReady: boolean;
@@ -57,6 +59,7 @@ export function readSettings(): PortScopeSettings {
     healthPath: normalizePath(config.get<string>('healthPath', '/'), '/'),
     ignorePorts: readPorts(config.get<unknown>('ignorePorts', [])),
     ignoreProcesses: readNames(config.get<unknown>('ignoreProcesses', [])),
+    hideHelperPorts: config.get<boolean>('hideHelperPorts', true),
     openPath: normalizePath(config.get<string>('openPath', ''), ''),
     notifyReady: config.get<boolean>('notifications.ready', true),
     notifyStopped: config.get<boolean>('notifications.stopped', true),

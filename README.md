@@ -61,6 +61,7 @@ Open them with `Ctrl+,` and search for "PortScope", from the ⚙ in the hover, o
 | `portScope.healthPath`             | `/`          | Request path of the health check, for example `/health`.          |
 | `portScope.ignorePorts`            | `[]`         | Ports that are never shown or checked.                            |
 | `portScope.ignoreProcesses`        | `["browse"]` | Program or script names that are never shown.                     |
+| `portScope.hideHelperPorts`        | `true`       | Hide random helper ports of a process that has a main port.       |
 | `portScope.openPath`               | `""`         | Path added when you open or copy a URL, for example `/admin`.     |
 | `portScope.notifications.ready`    | `true`       | Notify when a silent server starts answering.                     |
 | `portScope.notifications.stopped`  | `true`       | Notify when a server stops without being stopped from PortScope.  |

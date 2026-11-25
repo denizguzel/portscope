@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- Setting `portScope.hideHelperPorts` hides ports the system picked at random, such as an SSH tunnel, when the same process also listens on a chosen port. It is on by default.
+
 ## [0.3.0] - 2026-11-18
 
 ### Added

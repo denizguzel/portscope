@@ -130,6 +130,11 @@
           ],
           "markdownDescription": "Program or script names PortScope never shows, for example a tool that an AI agent started inside the project. `browse` matches both `/opt/bin/browse serve` and `node tools/browse.js`. Case does not matter."
         },
+        "portScope.hideHelperPorts": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Hide ports the system picked at random (for example an SSH tunnel or an internal socket) when the same process also listens on a chosen port. A process that only has random ports is still shown."
+        },
         "portScope.openPath": {
           "type": "string",
           "default": "",

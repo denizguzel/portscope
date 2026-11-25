@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import * as vscode from 'vscode';
 import { findDevServers } from './listening-ports';
+import { hideHelperPorts } from './helper-ports';
 import { isIgnoredCommand } from './process-ignore';
 import {
   COPY_COMMAND,
@@ -42,7 +43,8 @@ export function activate(context: vscode.ExtensionContext): void {
     try {
       const settings = readSettings();
       const found = await findDevServers(await readWorkspaceFolders());
-      const servers = found.filter(
+      const visible = settings.hideHelperPorts ? await hideHelperPorts(found) : found;
+      const servers = visible.filter(
         (server) =>
           !settings.ignorePorts.has(server.port) && !isIgnoredCommand(server.command, settings.ignoreProcesses),
       );
