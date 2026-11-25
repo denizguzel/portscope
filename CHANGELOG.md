@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-25
+
 ### Added
 
 - Setting `portScope.hideHelperPorts` hides ports the system picked at random, such as an SSH tunnel, when the same process also listens on a chosen port. It is on by default.
@@ -46,7 +48,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Status bar item with the dev servers of the current window, a picker, and Open, Copy URL, Stop and Force Stop actions.
 - Health dot based on an HTTP `HEAD` request.
 
-[Unreleased]: https://github.com/denizguzel/portscope/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/denizguzel/portscope/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/denizguzel/portscope/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/denizguzel/portscope/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/denizguzel/portscope/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/denizguzel/portscope/releases/tag/v0.2.0
